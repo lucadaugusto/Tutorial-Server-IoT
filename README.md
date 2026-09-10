@@ -186,7 +186,11 @@ docker compose version
 
 Explicação: se aparecer um número de versão, o Compose está instalado. Repare que é `docker compose`, com espaço, e não `docker-compose` com hífen.
 
-## Passo 22 — Clonar o repositório do FIWARE Descomplicado
+## Passo 22 — Instalar o Git e clonar o repositório do FIWARE Descomplicado
+
+```bash
+sudo apt install git
+```
 
 ```bash
 git clone https://github.com/fabiocabrini/fiware
@@ -236,41 +240,9 @@ Abra o Postman, configure a variável `{{url}}` com o IP anotado no passo 11 e e
 | Orion Context Broker | `GET http://{{url}}:1026/version` |
 | STH-Comet | `GET http://{{url}}:8666/version` |
 
-Explicação: o health check confirma que cada componente do FIWARE está no ar e respondendo. Se o Postman não conseguir se conectar, use os testes do anexo A para descobrir se o problema é no servidor ou na rede.
+Explicação: o health check confirma que cada componente do FIWARE está no ar e respondendo.
 
----
-
-## Anexo A — Testar os health checks pelo terminal
-
-Estes comandos rodam de dentro da própria VM e servem para separar problema de container de problema de rede. Cada um imprime apenas o código de resposta; o esperado é `200`.
-
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:4041/iot/about
-```
-
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:1026/version
-```
-
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8666/version
-```
-
-Se o terminal responde `200` e o Postman não alcança o servidor, o problema é de rede: VM em modo NAT, firewall do computador que hospeda a VM, ou security group da nuvem. O FIWARE está funcionando.
-
-## Anexo B — (Opcional) Rodar o Docker sem sudo
-
-```bash
-sudo usermod -aG docker $USER
-```
-
-```bash
-newgrp docker
-```
-
-Explicação: adiciona seu usuário ao grupo `docker`, o que dispensa o `sudo` nos comandos do Docker. Pertencer a esse grupo dá poder equivalente a root na máquina. Em servidor exposto na internet, pense se compensa.
-
-## Anexo C — Segurança
+## Anexo A — Segurança
 
 O stack do FIWARE Descomplicado é didático e sobe sem autenticação nenhuma. Orion, IoT Agent, STH-Comet, MongoDB e Mosquitto ficam acessíveis a qualquer um que alcance as portas.
 
@@ -279,7 +251,7 @@ Em VM local isso não é problema. Em VM de nuvem com IP público:
 - restrinja o security group ao seu IP de origem, nunca `0.0.0.0/0`;
 - não exponha a porta 27017 (MongoDB aberto na internet é varrido por bots e sequestrado em questão de horas).
 
-## Anexo D — Problemas comuns
+## Anexo B — Problemas comuns
 
 | Sintoma | Causa provável | O que fazer |
 |---|---|---|
